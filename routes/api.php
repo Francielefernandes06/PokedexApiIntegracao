@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\PokeApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::post('/logout', [LoginController::class, 'logout']);
+    Route::get('/pokemons', [PokeApiController::class, 'index']);
+
 });
 
 
