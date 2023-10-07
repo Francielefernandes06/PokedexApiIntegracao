@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\LoginController;
+use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\PokeApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +18,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+
+    Route::post('/logout', [LoginController::class, 'logout']);
+    Route::get('/pokemons', [PokeApiController::class, 'index']);
+    Route::get('/pokemons/details/{id}', [PokeApiController::class, 'show']);
+
+    Route::post('/favorites', [FavoriteController::class, 'store']);
+
+    Route::get('/my-favorites', [FavoriteController::class, 'index']);
+
 });
+
+
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/register', [RegisterController::class, 'register']);
