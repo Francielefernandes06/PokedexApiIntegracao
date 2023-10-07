@@ -126,7 +126,7 @@ class PokeApiController extends Controller
                 'speed' => $pokemonData['stats'][5]['base_stat'], // Suponho que 'speed' está no índice 5
                 'total_stats' => $totalStats,
                 'ability' => $pokemonData['abilities'][0]['ability']['name'], // Suponho que você deseja a primeira habilidade
-                'photo' => $pokemonData['sprites']['other']['dream_world']['front_default'],
+                'photo' => $pokemonData['sprites']['other']['home']['front_default'],
 
             ];
 
