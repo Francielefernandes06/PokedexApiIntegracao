@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\PokeApiController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/favorites', [FavoriteController::class, 'store']);
 
     Route::get('/my-favorites', [FavoriteController::class, 'index']);
+
+    Route::get('/user-by-name',[UserController::class, 'searchByName']);
 
 });
 

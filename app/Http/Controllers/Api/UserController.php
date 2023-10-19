@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -130,7 +131,7 @@ class UserController extends Controller
         $userModel = new User();
         $user = $userModel->getUser($id);
 
-       
+
 
         if (!$user) {
             return response()->json(['error' => 'Usuário não encontrado.'], 404);
@@ -139,5 +140,73 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json(['message' => 'Usuário deletado com sucesso.'], 200);
+    }
+
+    public function searchByName(Request $request)
+    {
+
+        //dd('test');
+        $name = $request->input('name');
+
+        if (empty($name)) {
+            return response()->json(['error' => 'Por favor, forneça um nome para buscar.'], 400);
+        }
+
+        $users = User::with('favorites')->where('name', 'like', '%' . $name . '%')->get();
+
+        if ($users->isEmpty()) {
+            return response()->json(['error' => 'Nenhum usuário encontrado com esse nome.'], 404);
+        }
+        $users->each(function ($user) {
+            $user->favorites->each(function ($favorite) {
+                $pokemonData = $this->getPokemonInfo($favorite->pokemon_id);
+                $favorite->pokemon_info = $pokemonData;
+            });
+        });
+
+        return response()->json($users);
+    }
+
+    public function getPokemonInfo($pokemonId)
+    {
+        // Instancie o cliente Guzzle
+        $client = new Client();
+
+        // Faça uma solicitação à API da PokeAPI para obter detalhes do Pokémon por ID
+        $response = $client->request('GET', 'https://pokeapi.co/api/v2/pokemon/' . $pokemonId);
+
+        // Verifique se a solicitação foi bem-sucedida
+        if ($response->getStatusCode() == 200) {
+            // Obtenha os dados da resposta
+            $pokemonData = json_decode($response->getBody(), true);
+            //dd($pokemonData['stats']);
+
+            $totalStats = 0;
+            foreach ($pokemonData['stats'] as $stat) {
+                $totalStats += $stat['base_stat'];
+            }
+
+            // Construa os detalhes do Pokémon que você deseja retornar
+            $pokemonDetails = [
+                'id' => $pokemonData['id'],
+                'name' => $pokemonData['name'],
+                'type' => $pokemonData['types'][0]['type']['name'], // Suponho que você deseja o primeiro tipo
+                'hp' => $pokemonData['stats'][0]['base_stat'], // Suponho que 'hp' está no índice 0
+                'attack' => $pokemonData['stats'][1]['base_stat'], // Suponho que 'attack' está no índice 1
+                'defense' => $pokemonData['stats'][2]['base_stat'], // Suponho que 'defense' está no índice 2
+                'special_attack' => $pokemonData['stats'][3]['base_stat'], // Suponho que 'special_attack' está no índice 3
+                'special_defense' => $pokemonData['stats'][4]['base_stat'], // Suponho que 'special_defense' está no índice 4
+                'speed' => $pokemonData['stats'][5]['base_stat'], // Suponho que 'speed' está no índice 5
+                'total_stats' => $totalStats,
+                'ability' => $pokemonData['abilities'][0]['ability']['name'], // Suponho que você deseja a primeira habilidade
+                'photo' => $pokemonData['sprites']['other']['home']['front_default'],
+
+            ];
+
+            return response()->json($pokemonDetails);
+        } else {
+            // Trate erros, se necessário
+            return response()->json(['error' => 'Falha ao buscar detalhes do Pokémon'], 500);
+        }
     }
 }
