@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/my-favorites', [FavoriteController::class, 'index']);
 
+    Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy']);
 });
 
 

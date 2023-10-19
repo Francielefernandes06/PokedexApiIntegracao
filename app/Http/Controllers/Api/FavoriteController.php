@@ -102,28 +102,6 @@ class FavoriteController extends Controller
         return response()->json(['message' => 'Pokémon adicionado aos favoritos com sucesso.']);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -133,6 +111,23 @@ class FavoriteController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = Auth::user();
+
+        $favorite = Favorite::where('user_id', $user->id)
+            ->where('pokemon_id', $id)
+            ->first();
+
+        if (!$favorite) {
+            return response()->json(['message' => 'Este Pokémon não está em seus favoritos.'], 422);
+        }
+
+
+        $user->pontuation += 50;
+        $user->save();
+
+
+        $favorite->delete();
+
+        return response()->json(['message' => 'Pokémon removido dos favoritos com sucesso.']);
     }
 }
