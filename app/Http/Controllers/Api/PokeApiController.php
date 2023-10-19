@@ -136,4 +136,6 @@ class PokeApiController extends Controller
             return response()->json(['error' => 'Falha ao buscar detalhes do Pokémon'], 500);
         }
     }
+
+    
 }
