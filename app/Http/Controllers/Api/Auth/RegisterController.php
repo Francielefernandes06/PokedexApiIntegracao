@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-   
+
     public function register(Request $request)
     {
 
@@ -33,6 +34,7 @@ class RegisterController extends Controller
         ]);
 
         $token = $user->createToken('authToken')->plainTextToken;
+
 
         return response()->json(['user' => $user, 'token' => $token], 201);
     }
