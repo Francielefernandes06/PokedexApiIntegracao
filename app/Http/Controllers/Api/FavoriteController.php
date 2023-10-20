@@ -63,10 +63,32 @@ class FavoriteController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/api/favorites",
+     *     summary="Favoritar pokemon",
+     *     tags={"Favorites"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Favoritar Pokemon",
+     *         @OA\JsonContent(
+     *   @OA\Property(property="pokemon_id", type="integer", example=10),
+
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     *                                 )
+     *                             ),
+     *
+     *
+     *     @OA\Response(response=201, description="pokemon favoritado com sucesso"),
+     *     @OA\Response(response=400, description="Requisição inválida"),
+     *     @OA\Response(response=500, description="Erro de servidor interno"),
+     *     @OA\SecurityScheme(
+     *         type="http",
+     *         securityScheme="bearerToken",
+     *         scheme="bearer",
+     *         bearerFormat="JWT",
+     *     ),
+     *     security={{"bearerToken": {}}},
+     * )
      */
     public function store(Request $request)
     {
@@ -104,10 +126,28 @@ class FavoriteController extends Controller
 
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @OA\Delete(
+     *     path="/api/favorites/{id}",
+     *     summary="Excluir pokemon dos favoritos por ID",
+     *     tags={"Favorites"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID da pokemon a ser excluída dos favoritos",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="pokemon excluído dos favoritos com sucesso"),
+     *     @OA\Response(response=404, description="Favorito não encontrado"),
+     *     @OA\Response(response=500, description="Erro de servidor interno"),
+     *    @OA\SecurityScheme(
+     *         type="http",
+     *         securityScheme="bearerToken",
+     *         scheme="bearer",
+     *         bearerFormat="JWT",
+     *     ),
+     *     security={{"bearerToken": {}}},
+     * )
      */
     public function destroy($id)
     {
