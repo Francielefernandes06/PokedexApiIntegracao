@@ -15,6 +15,38 @@ class LoginController extends Controller
     }
 
 
+    /**
+     * @OA\Post(
+     *  tags={"Login"},
+     *  path="/api/login",
+     *  summary="Realiza login no sistema",
+     *  description="Retorna token de autenticação",
+     *  @OA\RequestBody(
+     *      required=true,
+     *      @OA\MediaType(
+     *          mediaType="JSON",
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="email",
+     *                  description="Email do usuário",
+     *                  type="string",
+     *                  example="email@email.com"
+     *              ),
+     *              @OA\Property(
+     *                  property="password",
+     *                  description="Senha do usuário",
+     *                  type="string",
+     *                  format="password",
+     *                  example="senha2023"
+     *              ),
+     *          ),
+     *      ),
+     *  ),
+     *  @OA\Response(response=200, description="Operação bem sucedida"),
+     *  @OA\Response(response=500, description="Erro de servidor interno"),
+     * )
+     *
+     */
     public function login()
     {
         $requestData = json_decode(file_get_contents('php://input'), true);
@@ -42,7 +74,25 @@ class LoginController extends Controller
         }
     }
 
-   
+    /**
+     * @OA\Post(
+     *  tags={"Logout"},
+     *  path="/api/logout",
+     *  summary="Realiza logout no sistema",
+     *  description="Logout do sistema",
+     *
+     *  @OA\Response(response=200, description="Operação bem sucedida"),
+     *  @OA\Response(response=500, description="Erro de servidor interno"),
+     * @OA\SecurityScheme(
+     *         type="http",
+     *         securityScheme="bearerToken",
+     *         scheme="bearer",
+     *         bearerFormat="JWT",
+     *     ),
+     *     security={{"bearerToken": {}}},
+     * )
+     *
+     */
     public function logout(Request $request)
     {
         $user = $request->user();

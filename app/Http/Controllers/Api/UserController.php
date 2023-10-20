@@ -142,6 +142,42 @@ class UserController extends Controller
         return response()->json(['message' => 'Usuário deletado com sucesso.'], 200);
     }
 
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/user-by-name",
+ *     summary="Buscar usuários por nome e obter informações sobre Pokémon favoritos",
+ *     tags={"Usuários"},
+ *     @OA\Parameter(
+ *         name="name",
+ *         in="query", 
+ *         required=true,
+ *         description="Nome para busca",
+ *         @OA\Schema(type="string")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Usuários encontrados com sucesso",
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Erro de validação dos dados",
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Nenhum usuário encontrado com esse nome",
+ *     ),
+ *     @OA\SecurityScheme(
+ *         type="http",
+ *         securityScheme="bearerToken",
+ *         scheme="bearer",
+ *         bearerFormat="JWT",
+ *     ),
+ *     security={{"bearerToken": {}}},
+ * )
+ */
+
     public function searchByName(Request $request)
     {
 
@@ -166,6 +202,7 @@ class UserController extends Controller
 
         return response()->json($users);
     }
+
 
     public function getPokemonInfo($pokemonId)
     {
